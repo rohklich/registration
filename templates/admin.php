@@ -23,4 +23,8 @@ foreach ( $_['groups'] as $group ) {
 	<em><?php p($l->t('Enter a semicolon-separated list of allowed domains. Example: owncloud.com;github.com'));?></em>
 	</p>
 
+	<p>
+	<label for="reg_secret"><?php p($l->t('Secret passphrase, which must be provided to register')); ?></label>
+	<input type="text" id="reg_secret" name="reg_secret" value=<?php p($_['reg_secret']);?>>
+	</p>
 </form>

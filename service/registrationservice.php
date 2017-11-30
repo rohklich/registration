@@ -427,5 +427,9 @@ class RegistrationService {
 			}
 		}
 	}
+	
+	public function validateSecret($secret) {
+		return ($this->config->getAppValue($this->appName, 'reg_secret', '') === $secret) ? true : false;
+	}
 
 }
