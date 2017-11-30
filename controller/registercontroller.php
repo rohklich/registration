@@ -149,17 +149,7 @@ class RegisterController extends Controller {
 				], 'guest');
 		}
 
-		if ($user->isEnabled()) {
-			// log the user
-			return $this->registrationService->loginUser($user->getUID(), $username, $password, false);
-		} else {
-			// warn the user their account needs admin validation
-			return new TemplateResponse(
-				'registration',
-				'message',
-				array('msg' => $this->l10n->t("Your account has been successfully created, but it still needs approval from an administrator.")),
-				'guest');
-		}
+		return $this->registrationService->loginUser($user->getUID(), $username, $password, false);
 	}
 
 	private function renderError($error, $hint="") {

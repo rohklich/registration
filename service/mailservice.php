@@ -106,25 +106,10 @@ class MailService {
 
 	/**
 	 * @param string $userId
-	 * @param string $userGroupId
-	 * @param bool $userIsEnabled
 	 */
-	public function notifyAdmins($userId, $userIsEnabled, $userGroupId) {
+	public function notifyAdmins($userId) {
 		// Notify admin
 		$admin_users = $this->groupManager->get('admin')->getUsers();
-
-		// if the user is disabled and belongs to a group
-		// add subadmins of this group to notification list
-		if (!$userIsEnabled and $userGroupId) {
-			$group = $this->groupManager->get($userGroupId);
-			$subadmin_users = $this->groupManager->getSubAdmin()->getGroupsSubAdmins($group);
-			foreach ($subadmin_users as $user) {
-				if (!in_array($user, $admin_users)) {
-					$admin_users[] = $user;
-				}
-			}
-		}
-
 		$to_arr = array();
 		foreach ( $admin_users as $au ) {
 			$au_email = $au->getEMailAddress();
@@ -133,7 +118,7 @@ class MailService {
 			}
 		}
 		try {
-			$this->sendNewUserNotifEmail($to_arr, $userId, $userIsEnabled);
+			$this->sendNewUserNotifEmail($to_arr, $userId);
 		} catch (\Exception $e) {
 			$this->logger->error('Sending admin notification email failed: '. $e->getMessage());
 		}
@@ -143,27 +128,16 @@ class MailService {
 	 * Sends new user notification email to admin
 	 * @param array $to
 	 * @param string $username the new user
-	 * @param bool $userIsEnabled the new user account is enabled
 	 * @throws \Exception
 	 */
-	private function sendNewUserNotifEmail(array $to, $username, $userIsEnabled) {
+	private function sendNewUserNotifEmail(array $to, $username) {
 		$template_var = [
 			'user' => $username,
 			'sitename' => $this->defaults->getName()
 		];
-
-		// handle user enableness
-		if ($userIsEnabled) {
-			$html_template_file = 'email.newuser_html';
-			$plaintext_template_file = 'email.newuser_plaintext';
-		} else {
-			$html_template_file = 'email.newuser.disabled_html';
-			$plaintext_template_file = 'email.newuser.disabled_plaintext';
-		}
-
-		$html_template = new TemplateResponse('registration', $html_template_file, $template_var, 'blank');
+		$html_template = new TemplateResponse('registration', 'email.newuser_html', $template_var, 'blank');
 		$html_part = $html_template->render();
-		$plaintext_template = new TemplateResponse('registration', $plaintext_template_file, $template_var, 'blank');
+		$plaintext_template = new TemplateResponse('registration', 'email.newuser_plaintext', $template_var, 'blank');
 		$plaintext_part = $plaintext_template->render();
 		$subject = $this->l10n->t('A new user "%s" has created an account on %s', [$username, $this->defaults->getName()]);
 
