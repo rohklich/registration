@@ -4,7 +4,6 @@ if ( \OCP\Util::getVersion()[0] >= 12 )
 	\OCP\Util::addStyle('core', 'guest');
 if ($_['entered']): ?>
 	<?php if (empty($_['errormsg'])): ?>
-		<?php print_unescaped($_['home']) ?>
 		<ul class="msg">
 			<li>
 			<?php p($l->t('Thank you for registering, you should receive a verification link in a few minutes.')); ?>
@@ -13,7 +12,6 @@ if ($_['entered']): ?>
 	<?php else: ?>
 		<form action="<?php print_unescaped(\OC::$server->getURLGenerator()->linkToRoute('registration.register.validateEmail')) ?>" method="post">
 			<fieldset>
-				<?php print_unescaped($_['home']) ?>
 				<ul class="error">
 					<li><?php p($_['errormsg']); ?></li>
 				</ul>
@@ -40,7 +38,6 @@ if ($_['entered']): ?>
 <?php else: ?>
 	<form action="<?php print_unescaped(\OC::$server->getURLGenerator()->linkToRoute('registration.register.validateEmail')) ?>" method="post">
 		<fieldset>
-			<?php print_unescaped($_['home']) ?>
 			<?php if ($_['errormsg']): ?>
 				<ul class="error">
 					<li><?php p($_['errormsg']); ?></li>

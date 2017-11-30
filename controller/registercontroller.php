@@ -62,8 +62,7 @@ class RegisterController extends Controller {
 		$params = array(
 			'errormsg' => $errormsg ? $errormsg : $this->request->getParam('errormsg'),
 			'entered' => $entered ? $entered : $this->request->getParam('entered'),
-        	'secret_required' => $this->registrationService->validateSecret('') ? false : true,
-        	'home' => '<a class="button primary login-back icon-back-white" href="' . \OC::$server->getURLGenerator()->getBaseUrl() . '">' . $this->l10n->t('goto login') . '</a>' //getThemingDefaults()->getBaseUrl()
+        	'secret_required' => $this->registrationService->validateSecret('') ? false : true
 		);
 		return new TemplateResponse('registration', 'register', $params, 'guest');
 	}
@@ -77,20 +76,17 @@ class RegisterController extends Controller {
 		$email = $this->request->getParam('email');
 		$reg_secret = $this->request->getParam('reg_secret');
 		$secret_required = $this->registrationService->validateSecret('') ? false : true;
-		$home_html = '<a class="button primary login-back icon-back-white" href="' . \OC::$server->getURLGenerator()->getBaseUrl() . '">' . $this->l10n->t('goto login') . '</a>';
 
 		if($secret_required && !$this->registrationService->validateSecret($reg_secret)) 
 			return new TemplateResponse('registration', 'register', array(
     			'errormsg' => $this->l10n->t('The secret passphrase was wrong.'),
     			'entered' => $email,
-    			'secret_required' => true,
-    			'home' => $home_html
-				), 'guest');
+    			'secret_required' => true
+ 				), 'guest');
 
 		if (!$this->registrationService->checkAllowedDomains($email)) {
 			return new TemplateResponse('registration', 'domains', [
-				'domains' => $this->registrationService->getAllowedDomains(),
-            	'home' => '<a class="button primary" href="' . \OC::$server->getURLGenerator()->linkToRoute('registration.register.askEmail') . '">' . $this->l10n->t('try again') . '</a>'
+				'domains' => $this->registrationService->getAllowedDomains()
 			], 'guest');
 		}
 		try {
@@ -103,8 +99,7 @@ class RegisterController extends Controller {
 
 
 		return new TemplateResponse('registration', 'message', array('msg' =>
-			$this->l10n->t('Verification email successfully sent.'),
-            'home' => '<a class="button primary" href="' . \OC::$server->getURLGenerator()->getBaseUrl() . '">' . $this->l10n->t('goto login') . '</a>'
+			$this->l10n->t('Verification email successfully sent.')
 		), 'guest');
 	}
 
